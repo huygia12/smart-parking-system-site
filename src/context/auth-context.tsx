@@ -24,7 +24,6 @@ const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       if (!accessToken) {
         const newAccessToken: string | undefined =
           await authService.apis.refreshToken();
-        console.log(newAccessToken);
         if (!newAccessToken) {
           return false;
         }

@@ -30,9 +30,9 @@ const userService = {
     },
     createCustomer: async (data: CustomerFormProps): Promise<Customer> => {
       const response = await axiosInstance.post<{ info: Customer }>(
-        `${userEndPoint}`,
+        `${userEndPoint}/signup`,
         {
-          userName: data.username.trim(),
+          username: data.username.trim(),
         }
       );
 
@@ -45,7 +45,7 @@ const userService = {
       const res = await axiosInstance.put<{ info: Customer }>(
         `${userEndPoint}/${customerID}`,
         {
-          userName: data.username.trim(),
+          username: data.username.trim(),
         }
       );
       return res.data.info;
@@ -60,7 +60,6 @@ const userService = {
       });
       return res;
     },
-
     deleteCustomer: async (customerID: string): Promise<AxiosResponse> => {
       const res = await axiosInstance.delete(`${userEndPoint}/${customerID}`);
       return res;

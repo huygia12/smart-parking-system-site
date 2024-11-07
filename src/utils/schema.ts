@@ -15,6 +15,10 @@ const customerSchema = z.object({
   username: notBlankString(),
 });
 
+const cardSchema = z.object({
+  cardId: notBlankString(),
+});
+
 const loginSchema = z.object({
   password: z.string().min(6, { message: SchemaResponse.PASSWORD_INVALID }),
   username: notBlankString(),
@@ -24,4 +28,6 @@ export type LoginFormProps = z.infer<typeof loginSchema>;
 
 export type CustomerFormProps = z.infer<typeof customerSchema>;
 
-export { customerSchema, loginSchema };
+export type CardFormProps = z.infer<typeof cardSchema>;
+
+export { customerSchema, loginSchema, cardSchema };

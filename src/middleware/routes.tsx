@@ -1,5 +1,6 @@
 import { AdminLayout, UserLayout } from "@/layout";
 import {
+  CardManagement,
   CustomerManagement,
   HomePage,
   Login,
@@ -7,7 +8,7 @@ import {
   ParkingStates,
   Unauthorized,
 } from "@/pages";
-import { userService } from "@/services";
+import { cardService, userService } from "@/services";
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./protected-route";
 import { Role } from "@/types/enum";
@@ -48,7 +49,6 @@ const routes = createBrowserRouter([
     ],
   },
   {
-    path: "staff",
     element: (
       <AuthProvider>
         <ProtectedRoute allowedRoles={[Role.STAFF]}>
@@ -59,10 +59,16 @@ const routes = createBrowserRouter([
     errorElement: <PageNotFound />,
     children: [
       {
-        index: true,
+        path: "customers",
         id: "customer_management",
         loader: userService.apis.getCustomers,
         element: <CustomerManagement />,
+      },
+      {
+        path: "cards",
+        id: "card_management",
+        loader: cardService.apis.getCards,
+        element: <CardManagement />,
       },
     ],
   },

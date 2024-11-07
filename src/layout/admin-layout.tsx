@@ -16,7 +16,7 @@ const AdminLayout: React.FC = () => {
           {navigation.state === "loading" ? <TopBarProgress /> : <Outlet />}
         </div>
       </main>
-      <AppFooter className="bg-theme-softer" />
+      <AppFooter />
       <Toaster
         richColors
         toastOptions={{

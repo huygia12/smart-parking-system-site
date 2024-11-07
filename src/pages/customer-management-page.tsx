@@ -11,11 +11,8 @@ import { CustomerFormProps } from "@/utils/schema";
 import axios, { HttpStatusCode } from "axios";
 
 const CustomerManagement: FC = () => {
-  const initData = useRouteLoaderData("customer_management") as {
-    users: Customer[];
-    totalUsers: number;
-  };
-  const [customers, setUsers] = useState<Customer[]>(initData.users);
+  const initData = useRouteLoaderData("customer_management") as Customer[];
+  const [customers, setUsers] = useState<Customer[]>(initData);
   const [selectedUser, setSelectedUser] = useState<Customer | undefined>();
 
   const handleDeleteCustomer = () => {
@@ -49,7 +46,7 @@ const CustomerManagement: FC = () => {
       error: (error) => {
         if (axios.isAxiosError(error)) {
           if (error.response?.status == HttpStatusCode.Conflict) {
-            return "Update customer failed: license plate conflict";
+            return "Update customer failed: name already in use";
           }
         }
         return "Update customer failed";
@@ -69,7 +66,7 @@ const CustomerManagement: FC = () => {
       error: (error) => {
         if (axios.isAxiosError(error)) {
           if (error.response?.status == HttpStatusCode.Conflict) {
-            return "Add customer failed: license plate conflict";
+            return "Add customer failed: name already in use";
           }
         }
         return "Add customer failed";
@@ -79,7 +76,7 @@ const CustomerManagement: FC = () => {
 
   return (
     <div className="my-8">
-      <div className="flex gap-4">
+      <div className="flex gap-4 mx-auto w-xl">
         <CustomerTable
           customers={customers}
           onSelectCustomer={setSelectedUser}

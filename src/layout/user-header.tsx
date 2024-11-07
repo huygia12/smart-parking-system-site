@@ -28,10 +28,8 @@ const UserHeader: FC<HTMLAttributes<HTMLHeadElement>> = ({ ...props }) => {
     () => location.pathname,
     [location.pathname]
   );
-  // console.log(location.pathname);
 
   return (
-    // <header className="w-full flex flex-col sticky top-0 z-50 shadow-xl bg-theme h-[5rem] justify-center">
     <header
       className={cn(
         "flex justify-between items-center font-sans mx-5 px-10 rounded-2xl bg-white h-[5rem]",
@@ -52,7 +50,7 @@ const UserHeader: FC<HTMLAttributes<HTMLHeadElement>> = ({ ...props }) => {
             className={cn(
               "text-xl hover_scale-110 transition ease-out duration-300",
               selectedRoute === item.src &&
-                "text-xl font-extrabold border-b-4 border-primary rounded"
+                "text-xl font-extrabold border-b-4 border-primary"
             )}
           >
             {item.name}
@@ -66,7 +64,7 @@ const UserHeader: FC<HTMLAttributes<HTMLHeadElement>> = ({ ...props }) => {
           <DropMenuLinkItem
             item={{
               name: "Staff View",
-              src: "/staff",
+              src: "/customers",
               visible: currentUser?.role === Role.STAFF ? true : false,
             }}
           />

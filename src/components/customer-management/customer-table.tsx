@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateTime } from "@/utils/helpers";
 import { Customer } from "@/types/model";
 import { cn } from "@/lib/utils";
+import { Separator } from "../ui/separator";
 
 const columnHeaders = ["", "CUSTOMER", "REGISTERED DATE", "STATUS"];
 
@@ -59,7 +60,7 @@ const CustomerTable: FC<CustomerTableProps> = ({ ...props }) => {
                   className={cn(
                     "cursor-pointer",
                     selectedCustomer?.userId === customer.userId &&
-                      "bg-theme-softer"
+                      "bg-slate-200"
                   )}
                   onClick={() => handleSelectCustomer(customer)}
                 >
@@ -73,10 +74,27 @@ const CustomerTable: FC<CustomerTableProps> = ({ ...props }) => {
                     {formatDateTime(`${customer.createdAt}`)}
                   </TableCell>
                   <TableCell className="text-center text-base">
-                    {customer.isActive}
+                    <span
+                      className={cn(
+                        "bg-white relative py-2 pl-8 pr-4 shadow-lg rounded-2xl"
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "absolute left-2 h-3 w-3 rounded-full translate-y-1/2",
+                          customer.isActive ? "bg-green-500" : "bg-red-600"
+                        )}
+                      />
+                      {customer.isActive ? "Activate" : "Inactivate"}
+                    </span>
                   </TableCell>
                 </TableRow>
               ))}
+              <tr>
+                <td>
+                  <Separator />
+                </td>
+              </tr>
             </TableBody>
           </Table>
           <ScrollBar orientation="horizontal" />

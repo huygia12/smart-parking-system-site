@@ -28,9 +28,13 @@ const TableContextMenu: FC<TableUtilMenuProps> = ({ ...props }) => {
   return (
     <ContextMenu>
       <ContextMenuTrigger>{props.children}</ContextMenuTrigger>
-      <ContextMenuContent className="w-64 bg-theme-softer text-gray-600">
-        <ContextMenuItem onClick={handleCopy} className="text-base" inset>
-          Copy license plate
+      <ContextMenuContent className="w-64 bg-primary-softer text-gray-600">
+        <ContextMenuItem
+          onClick={handleCopy}
+          className="text-base cursor-pointer"
+          inset
+        >
+          Copy to clipboard
           <ContextMenuShortcut>
             <Copy />
           </ContextMenuShortcut>

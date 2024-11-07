@@ -5,7 +5,7 @@ width="150" hspace="10" vspace="10">
 
 ||
 
-FE for **Smart Parking System**. This project uses React, Typescript and Vitejs.
+FE for **Smart Parking System**. This project uses React, Typescript, Socket client and Vitejs.
 
 **_CT6_**
 
