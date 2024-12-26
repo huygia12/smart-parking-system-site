@@ -4,15 +4,16 @@ import { FC, HTMLAttributes } from "react";
 import { Card as CardWrapper, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Card } from "@/types/model";
-import CardDialog from "./card-dialog";
+import CardActionDialog from "./card-action-dialog";
 import { CardFormProps } from "@/utils/schema";
 import DeleteCardAlertDialog from "./delete-card-alert-dialog";
+import { ActionResult } from "@/types/component";
 
 interface UserToolsProps extends HTMLAttributes<HTMLDivElement> {
   selectedCard: Card | undefined;
   handleDeleteCard: () => void;
-  handleUpdateCard: (data: CardFormProps) => void;
-  handleAddCard: (data: CardFormProps) => void;
+  handleUpdateCard: (data: CardFormProps) => Promise<ActionResult>;
+  handleAddCard: (data: CardFormProps) => Promise<ActionResult>;
 }
 
 const CardToolBar: FC<UserToolsProps> = ({ ...props }) => {
@@ -20,15 +21,15 @@ const CardToolBar: FC<UserToolsProps> = ({ ...props }) => {
     <CardWrapper className={cn("rounded-xl shadow-lg", props.className)}>
       <CardContent className="p-4 space-y-4 flex flex-col">
         {/** add button */}
-        <CardDialog type="Add" onSave={props.handleAddCard}>
+        <CardActionDialog type="Add" onSave={props.handleAddCard}>
           <Button variant="positive" className="text-xl">
             <Plus />
           </Button>
-        </CardDialog>
+        </CardActionDialog>
 
         {props.selectedCard ? (
           <>
-            <CardDialog
+            <CardActionDialog
               type="Edit"
               card={props.selectedCard}
               onSave={props.handleUpdateCard}
@@ -36,7 +37,7 @@ const CardToolBar: FC<UserToolsProps> = ({ ...props }) => {
               <Button variant="neutral">
                 <SquarePen />
               </Button>
-            </CardDialog>
+            </CardActionDialog>
 
             <DeleteCardAlertDialog onDeleteCard={props.handleDeleteCard}>
               <Button variant="negative">

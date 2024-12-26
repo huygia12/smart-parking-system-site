@@ -28,7 +28,7 @@ const authService = {
         `${userEndpoint}/login`,
         {
           password: data.password.trim(),
-          username: data.username.trim(),
+          email: data.email.trim(),
         },
         reqConfig
       );
@@ -69,7 +69,6 @@ const authService = {
 
       return userDecoded;
     } catch {
-      console.debug("Invalid token!");
       return null;
     }
   },

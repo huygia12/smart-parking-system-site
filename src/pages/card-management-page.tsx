@@ -6,12 +6,12 @@ import { CardTable, CardToolBar } from "@/components/card-management";
 import { CardFormProps } from "@/utils/schema";
 import axios, { HttpStatusCode } from "axios";
 import { cardService } from "@/services";
+import { ActionResult } from "@/types/component";
 
 const CardManagement: FC = () => {
   const initData = useRouteLoaderData("card_management") as Card[];
   const [cards, setCards] = useState<Card[]>(initData);
   const [selectedCard, setSelectedCard] = useState<Card | undefined>();
-  console.log(initData);
 
   const handleDeleteCard = () => {
     const deleteUser = cardService.apis.deleteCard(selectedCard!.cardId);
@@ -28,45 +28,53 @@ const CardManagement: FC = () => {
     });
   };
 
-  const handleUpdateCard = (data: CardFormProps) => {
-    const updateUser = cardService.apis.updateCard(selectedCard!.cardId, data);
+  const handleUpdateCard = async (
+    data: CardFormProps
+  ): Promise<ActionResult> => {
+    try {
+      const updatedCard = await cardService.apis.updateCard(
+        selectedCard!.cardId,
+        data
+      );
 
-    toast.promise(updateUser, {
-      loading: "Processing...",
-      success: (card: Card) => {
-        setSelectedCard(card);
-        setCards(cardService.updateCard(card, cards));
-        return "Update card succeed";
-      },
-      error: (error) => {
-        if (axios.isAxiosError(error)) {
-          if (error.response?.status == HttpStatusCode.Conflict) {
-            return "Update card failed: license plate conflict";
-          }
+      setCards(cardService.updateCard(updatedCard, cards));
+      return { status: true, message: "Update card succeed" };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status == HttpStatusCode.Conflict) {
+          return {
+            status: false,
+            message: "Update card failed: card id conflict",
+          };
         }
-        return "Update card failed";
-      },
-    });
+      }
+      return {
+        status: false,
+        message: "Update card failed",
+      };
+    }
   };
 
-  const handleAddCard = (data: CardFormProps) => {
-    const createCard = cardService.apis.createCard(data);
+  const handleAddCard = async (data: CardFormProps): Promise<ActionResult> => {
+    try {
+      const createdCard = await cardService.apis.createCard(data);
 
-    toast.promise(createCard, {
-      loading: "Processing...",
-      success: (newCard: Card) => {
-        setCards(cardService.addCard(newCard, cards));
-        return "Create card succeed";
-      },
-      error: (error) => {
-        if (axios.isAxiosError(error)) {
-          if (error.response?.status == HttpStatusCode.Conflict) {
-            return "Add card failed: license plate conflict";
-          }
+      setCards(cardService.addCard(createdCard, cards));
+      return { status: true, message: "Create card succeed" };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status == HttpStatusCode.Conflict) {
+          return {
+            status: false,
+            message: "Add card failed: card id conflict",
+          };
         }
-        return "Add card failed";
-      },
-    });
+      }
+      return {
+        status: false,
+        message: "Add card failed",
+      };
+    }
   };
 
   return (

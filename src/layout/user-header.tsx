@@ -60,7 +60,7 @@ const UserHeader: FC<HTMLAttributes<HTMLHeadElement>> = ({ ...props }) => {
 
       {/** USER DROP DOWN MENU */}
       {currentUser ? (
-        <DropdownAvatar>
+        <DropdownAvatar onClick={() => toast.loading("Processing...")}>
           <DropMenuLinkItem
             item={{
               name: "Staff View",

@@ -12,7 +12,7 @@ const AdminLayout: React.FC = () => {
       <ScrollToTop />
       <StaffHeader />
       <main className="flex min-h-[80vh] h-max w-full flex-col">
-        <div className="mx-auto w-sm md_w-md lg_w-lg xl_w-xl 2xl_w-2xl 4xl_w-3xl ">
+        <div className="mx-auto w-sm md_w-md lg_w-lg xl_w-xl 2xl_w-2xl 4xl_w-3xl">
           {navigation.state === "loading" ? <TopBarProgress /> : <Outlet />}
         </div>
       </main>

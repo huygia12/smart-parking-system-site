@@ -11,6 +11,10 @@ module.exports = {
   prefix: "",
   separator: "_",
   theme: {
+    textShadow: {
+      default: "0 2px 0 #000",
+      h1: "2px 8px 44px rgba(200, 200, 100, 1)",
+    },
     container: {
       center: true,
       padding: "2rem",
@@ -65,55 +69,19 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
+        fadeInScale: {
+          "0%": { opacity: 0, transform: "scale(0.2)" },
+          "50%": { opacity: 0.5, transform: "scale(0.6)" },
+          "100%": { opacity: 1, transform: "scale(1)" },
         },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-        sweep: {
-          "0%": {
-            transform: "translate(-150%, -150%) rotate(45deg)",
-            opacity: "0",
-          },
-          "50%": { opacity: "1" },
-          "100%": {
-            transform: "translate(150%, 150%) rotate(45deg)",
-            opacity: "0",
-          },
-        },
-        pulseZoom: {
-          "0%, 100%": { transform: "scale(1)" },
-          "50%": { transform: "scale(1.05)" },
-        },
-        shake: {
-          "0%, 100%": { transform: "translateX(0)", opacity: "1" },
-          "25%": { transform: "translateX(-10px)", opacity: "0.3" },
-          "50%": { transform: "translateX(10px)", opacity: "1" },
-          "75%": { transform: "translateX(-10px)", opacity: "0.3" },
-        },
-        translateAndRotate: {
-          "0%": {
-            transform: "translateX(0) rotate(90deg)",
-          },
-          // "50%": {
-          //   transform: "translateX(0) rotate(90deg)", // Translate X first
-          // },
-          "80%": {
-            transform: "-translateY(10rem) rotate(0deg)", // Rotate after translation
-          },
+        fadeInSlide: {
+          "0%": { opacity: 0, transform: "scale(0.8)" },
+          "100%": { opacity: 1, transform: "scale(1)" },
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        sweep: "sweep 1.5s ease-in-out infinite",
-        "sweep-slow": "sweep 2.5s ease-in infinite",
-        pulseZoom: "pulseZoom 3s ease-in-out infinite",
-        shake: "shake 1s ease-in-out",
-        translateAndRotate: "translateAndRotate 2s ease-out forwards",
+        fadeInScale: "fadeInScale 4s ease-out forwards",
+        fadeInSlide: "fadeInSlide 2s ease-out forwards",
       },
       max: {
         sm: "50rem",
@@ -155,5 +123,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("tailwindcss-textshadow")],
 };

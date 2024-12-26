@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import TableContextMenu from "@/components/common/table-context-menu";
 
-const columnHeaders = ["", "CARD ID", "CUSTOMER"];
+const columnHeaders = ["", "CARD ID", "CUSTOM NUMBER", "CUSTOMER"];
 
 interface CardTableProps extends HTMLAttributes<HTMLTableElement> {
   cards: Card[];
@@ -71,8 +71,11 @@ const CardTable: FC<CardTableProps> = ({ ...props }) => {
                   </TableCell>
                   <TableCell className="text-center text-base">
                     <TableContextMenu textToCopy={card.cardId}>
-                      {card.cardId}
+                      {card.cardCode}
                     </TableContextMenu>
+                  </TableCell>
+                  <TableCell className="text-center text-base">
+                    {card.name}
                   </TableCell>
                   <TableCell className="text-center text-base">
                     {card.user ? card.user.username : "_"}

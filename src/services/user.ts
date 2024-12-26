@@ -33,6 +33,7 @@ const userService = {
         `${userEndPoint}/signup`,
         {
           username: data.username.trim(),
+          email: data.email.trim(),
         }
       );
 
@@ -46,6 +47,7 @@ const userService = {
         `${userEndPoint}/${customerID}`,
         {
           username: data.username.trim(),
+          email: data.email.trim(),
         }
       );
       return res.data.info;
@@ -78,6 +80,9 @@ const userService = {
     return [
       ...prevCustomers.filter((e) => e.userId !== selectedCustomer.userId),
     ];
+  },
+  isActive: (customer: Customer) => {
+    return customer.cards && customer.cards.length > 0;
   },
 };
 

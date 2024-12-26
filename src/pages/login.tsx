@@ -15,8 +15,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { HttpStatusCode } from "axios";
 import { LoadingSpinner } from "@/components/effect";
 import { LoginFormProps, loginSchema } from "@/utils/schema";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useAuth } from "@/hooks";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login: FC = () => {
   const {
@@ -27,6 +28,7 @@ const Login: FC = () => {
   } = useForm<LoginFormProps>({
     resolver: zodResolver(loginSchema),
   });
+  const [passwordVisibility, setPasswordvisibility] = useState(false);
   const { login } = useAuth();
 
   const handleLoginFormSubmission: SubmitHandler<LoginFormProps> = async (
@@ -76,18 +78,19 @@ const Login: FC = () => {
         <CardContent className="grid gap-8">
           <div className="grid gap-2 ">
             <Label htmlFor="email" className="font-semibold text-lg">
-              Username
+              Email
               <span className="text-red-600 ">*</span>
             </Label>
             <Input
-              id="username"
-              {...register("username")}
-              placeholder="eg: John..."
+              id="email"
+              {...register("email")}
+              placeholder="eg: abc@gmail.com"
+              defaultValue="huy12@gmail.com"
               autoComplete="email"
               className="text-base placeholder_text-base placeholder_italic"
             />
-            {errors.username && (
-              <div className="text-red-600">{errors.username.message}</div>
+            {errors.email && (
+              <div className="text-red-600">{errors.email.message}</div>
             )}
           </div>
           <div className="flex flex-col gap-2">
@@ -98,6 +101,7 @@ const Login: FC = () => {
             <Input
               id="password"
               {...register("password")}
+              defaultValue="123123a@"
               type="password"
               autoComplete="new-password"
               className="text-lg"
@@ -105,6 +109,15 @@ const Login: FC = () => {
             {errors.password && (
               <div className="text-red-600">{errors.password.message}</div>
             )}
+            <button
+              className="cursor-pointer absolute right-2 top-2"
+              onClick={(e) => {
+                e.preventDefault();
+                setPasswordvisibility(!passwordVisibility);
+              }}
+            >
+              {passwordVisibility ? <Eye size={20} /> : <EyeOff size={20} />}
+            </button>
             <NavLink
               to="/login"
               className="text-lg underline hover_opacity-60 self-end"

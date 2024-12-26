@@ -13,6 +13,7 @@ import { formatDateTime } from "@/utils/helpers";
 import { Customer } from "@/types/model";
 import { cn } from "@/lib/utils";
 import { Separator } from "../ui/separator";
+import { userService } from "@/services";
 
 const columnHeaders = ["", "CUSTOMER", "REGISTERED DATE", "STATUS"];
 
@@ -82,10 +83,14 @@ const CustomerTable: FC<CustomerTableProps> = ({ ...props }) => {
                       <span
                         className={cn(
                           "absolute left-2 h-3 w-3 rounded-full translate-y-1/2",
-                          customer.isActive ? "bg-green-500" : "bg-red-600"
+                          userService.isActive(customer)
+                            ? "bg-green-500"
+                            : "bg-red-600"
                         )}
                       />
-                      {customer.isActive ? "Activate" : "Inactivate"}
+                      {userService.isActive(customer)
+                        ? "Activate"
+                        : "Inactivate"}
                     </span>
                   </TableCell>
                 </TableRow>

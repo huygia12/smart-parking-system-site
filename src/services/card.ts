@@ -7,17 +7,21 @@ const cardEndPoint = "/cards";
 
 const cardService = {
   apis: {
-    getCards: async (): Promise<Card[]> => {
+    getCards: async (available: boolean): Promise<Card[]> => {
+      let url = cardEndPoint;
+      url = `${url}?available=${available ? 1 : 0}`;
+
       const res = await axiosInstance.get<{
         info: Card[];
-      }>(cardEndPoint);
+      }>(url);
       return res.data.info;
     },
     createCard: async (data: CardFormProps): Promise<Card> => {
       const response = await axiosInstance.post<{ info: Card }>(
         `${cardEndPoint}`,
         {
-          cardId: data.cardId.trim(),
+          cardCode: data.cardCode.trim(),
+          name: data.name.trim(),
         }
       );
 
@@ -25,17 +29,16 @@ const cardService = {
     },
     updateCard: async (cardId: string, data: CardFormProps): Promise<Card> => {
       const res = await axiosInstance.put<{ info: Card }>(
-        `${cardEndPoint}?cardId=${cardId}`,
+        `${cardEndPoint}/${cardId}`,
         {
-          cardId: data.cardId.trim(),
+          cardCode: data.name.trim(),
+          name: data.name.trim(),
         }
       );
       return res.data.info;
     },
     deleteCard: async (cardId: string): Promise<AxiosResponse> => {
-      const res = await axiosInstance.delete(
-        `${cardEndPoint}?cardId=${cardId}`
-      );
+      const res = await axiosInstance.delete(`${cardEndPoint}/${cardId}`);
       return res;
     },
   },

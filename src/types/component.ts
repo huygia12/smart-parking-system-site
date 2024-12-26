@@ -1,6 +1,11 @@
-export interface Error {
-  success: boolean;
-  message?: string;
+// export interface Error {
+//   success: boolean;
+//   message?: string;
+// }
+
+export interface ActionResult {
+  status: boolean;
+  message: string;
 }
 
 //Link Item

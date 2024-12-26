@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -11,36 +11,48 @@ import { buttonVariants } from "@/utils/constants";
 import { Label } from "@/components/ui/label";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CardFormProps, cardSchema } from "@/utils/schema";
+import { VehicleFormProps, vehicleSchema } from "@/utils/schema";
 import { cn } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/effect";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/types/model";
+import { toast } from "sonner";
+import { ActionResult } from "@/types/component";
+import { Vehicle } from "@/types/model";
 
-interface CardDialogProps extends HTMLAttributes<HTMLDivElement> {
-  card?: Card;
+interface VehicleActionDialogProps extends HTMLAttributes<HTMLDivElement> {
+  vehicle?: Vehicle;
   type: `Edit` | `Add`;
-  onSave: (data: CardFormProps) => void;
+  onSave: (data: VehicleFormProps) => Promise<ActionResult>;
 }
 
-const AddCardDialog: React.FC<CardDialogProps> = ({ className, ...props }) => {
+const VehicleActionDialog: React.FC<VehicleActionDialogProps> = ({
+  className,
+  ...props
+}) => {
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
-  } = useForm<CardFormProps>({
-    resolver: zodResolver(cardSchema),
-    defaultValues: props.card && {
-      cardId: props.card.cardId,
-    },
+  } = useForm<VehicleFormProps>({
+    resolver: zodResolver(vehicleSchema),
   });
 
-  const handleFormSubmission: SubmitHandler<CardFormProps> = (data) => {
-    props.onSave(data);
-    if (props.type === `Add`) {
-      reset();
+  useEffect(() => {
+    if (props.vehicle) {
+      setValue("licensePlate", props.vehicle.licensePlate);
     }
+  }, [props.vehicle, setValue]);
+
+  const handleFormSubmission: SubmitHandler<VehicleFormProps> = async (
+    data
+  ) => {
+    const result = await props.onSave(data);
+    if (result.status) {
+      toast.success(result.message);
+      props.type == `Add` && reset();
+    } else toast.error(result.message);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -53,29 +65,35 @@ const AddCardDialog: React.FC<CardDialogProps> = ({ className, ...props }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>{props.children}</DialogTrigger>
-      <DialogContent className="min-w-[20rem]">
-        <DialogHeader className="min-h-10">
-          <DialogTitle className="text-[1.5rem]">{props.type} Card</DialogTitle>
+      <DialogContent className="min-w-[30rem]">
+        <DialogHeader className="min-h-10 mb-2">
+          <DialogTitle className="text-[1.5rem]">
+            {props.type} Vehicle Information
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleFormSubmission)}>
           <div className="flex flex-col gap-4">
             <div className="flex">
-              <Label htmlFor="cardId" className="text-lg my-auto w-[10rem]">
-                Card Id
+              <Label
+                htmlFor="licensePlate"
+                className="text-lg my-auto w-[20rem]"
+              >
+                License Plate
                 <span className="text-red-600 ">*</span>
               </Label>
               <Input
-                id="cardId"
-                {...register("cardId")}
-                type="text"
-                className="h-full text-lg focus-visible_ring-0 border-2 border-gray-300"
+                id="licensePlate"
+                {...register("licensePlate")}
                 onKeyDown={handleKeyDown}
+                type="text"
+                placeholder="eg: 14Y1 xxxxx"
+                className="h-full text-lg placeholder_italic placeholder_text-base focus-visible_ring-0 border-2 border-gray-300"
               />
             </div>
             <div className="flex justify-end">
-              {(errors.root || errors.cardId) && (
+              {(errors.root || errors.licensePlate) && (
                 <div className="text-red-600 my-auto ml-auto mr-6 text-right">
-                  {(errors.root || errors.cardId)!.message}
+                  {(errors.root || errors.licensePlate)!.message}
                 </div>
               )}
               <Button
@@ -101,4 +119,4 @@ const AddCardDialog: React.FC<CardDialogProps> = ({ className, ...props }) => {
   );
 };
 
-export default AddCardDialog;
+export default VehicleActionDialog;

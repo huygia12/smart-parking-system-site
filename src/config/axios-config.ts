@@ -3,10 +3,9 @@ import axios, { AxiosRequestConfig } from "axios";
 import { fromUnixTime, isAfter } from "date-fns";
 import { InvalidTokenError, jwtDecode } from "jwt-decode";
 
-const localHost = "http://127.0.0.1";
 const serverUrl =
   import.meta.env.VITE_API_SERVER_URL ||
-  `${localHost}:${import.meta.env.VITE_API_SERVER_PORT}`;
+  `http://127.0.0.1:${import.meta.env.VITE_API_SERVER_PORT}`;
 
 const apiUrl = `${serverUrl}/${import.meta.env.VITE_API_VERSION}`;
 

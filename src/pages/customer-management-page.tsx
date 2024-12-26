@@ -9,6 +9,7 @@ import {
 } from "@/components/customer-management";
 import { CustomerFormProps } from "@/utils/schema";
 import axios, { HttpStatusCode } from "axios";
+import { ActionResult } from "@/types/component";
 
 const CustomerManagement: FC = () => {
   const initData = useRouteLoaderData("customer_management") as Customer[];
@@ -30,48 +31,55 @@ const CustomerManagement: FC = () => {
     });
   };
 
-  const handleUpdateCustomer = (data: CustomerFormProps) => {
-    const updateUser = userService.apis.updateCustomer(
-      selectedUser!.userId,
-      data
-    );
+  const handleUpdateCustomer = async (
+    data: CustomerFormProps
+  ): Promise<ActionResult> => {
+    try {
+      const updateCustomer = await userService.apis.updateCustomer(
+        selectedUser!.userId,
+        data
+      );
 
-    toast.promise(updateUser, {
-      loading: "Processing...",
-      success: (user: Customer) => {
-        setSelectedUser(user);
-        setUsers(userService.updateCustomer(user, customers));
-        return "Update customer succeed";
-      },
-      error: (error) => {
-        if (axios.isAxiosError(error)) {
-          if (error.response?.status == HttpStatusCode.Conflict) {
-            return "Update customer failed: name already in use";
-          }
+      setUsers(userService.updateCustomer(updateCustomer, customers));
+      return { status: true, message: "Update customer succeed" };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status == HttpStatusCode.Conflict) {
+          return {
+            status: false,
+            message: "Update customer failed: email already in use",
+          };
         }
-        return "Update customer failed";
-      },
-    });
+      }
+      return {
+        status: false,
+        message: "Update customer failed",
+      };
+    }
   };
 
-  const handleAddCustomer = (data: CustomerFormProps) => {
-    const createCustomer = userService.apis.createCustomer(data);
+  const handleAddCustomer = async (
+    data: CustomerFormProps
+  ): Promise<ActionResult> => {
+    try {
+      const createCustomer = await userService.apis.createCustomer(data);
 
-    toast.promise(createCustomer, {
-      loading: "Processing...",
-      success: (newCustomer: Customer) => {
-        setUsers(userService.addCustomer(newCustomer, customers));
-        return "Create customer succeed";
-      },
-      error: (error) => {
-        if (axios.isAxiosError(error)) {
-          if (error.response?.status == HttpStatusCode.Conflict) {
-            return "Add customer failed: name already in use";
-          }
+      setUsers(userService.addCustomer(createCustomer, customers));
+      return { status: true, message: "Create customer succeed" };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status == HttpStatusCode.Conflict) {
+          return {
+            status: false,
+            message: "Add customer failed: email already in use",
+          };
         }
-        return "Add customer failed";
-      },
-    });
+      }
+      return {
+        status: false,
+        message: "Add customer failed",
+      };
+    }
   };
 
   return (

@@ -11,19 +11,21 @@ import { buttonVariants } from "@/utils/constants";
 import { Label } from "@/components/ui/label";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CustomerFormProps, customerSchema } from "@/utils/schema";
+import { CardFormProps, cardSchema } from "@/utils/schema";
 import { cn } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/effect";
 import { Button } from "@/components/ui/button";
-import { Customer } from "@/types/model";
+import { Card } from "@/types/model";
+import { ActionResult } from "@/types/component";
+import { toast } from "sonner";
 
-interface CustomerDialogProps extends HTMLAttributes<HTMLDivElement> {
-  customer?: Customer;
+interface CardActionDialogProps extends HTMLAttributes<HTMLDivElement> {
+  card?: Card;
   type: `Edit` | `Add`;
-  onSave: (data: CustomerFormProps) => void;
+  onSave: (data: CardFormProps) => Promise<ActionResult>;
 }
 
-const AddCustomerDialog: React.FC<CustomerDialogProps> = ({
+const CardActionDialog: React.FC<CardActionDialogProps> = ({
   className,
   ...props
 }) => {
@@ -33,20 +35,23 @@ const AddCustomerDialog: React.FC<CustomerDialogProps> = ({
     reset,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<CustomerFormProps>({
-    resolver: zodResolver(customerSchema),
-    defaultValues: props.customer && {
-      username: props.customer.username,
-    },
+  } = useForm<CardFormProps>({
+    resolver: zodResolver(cardSchema),
   });
 
   useEffect(() => {
-    props.customer && setValue("username", props.customer.username);
-  }, [props.customer]);
+    if (props.card) {
+      setValue("name", props.card.name);
+      setValue("cardCode", props.card.cardCode);
+    }
+  }, [props.card, setValue]);
 
-  const handleFormSubmission: SubmitHandler<CustomerFormProps> = (data) => {
-    props.onSave(data);
-    if (props.type == `Add`) reset();
+  const handleFormSubmission: SubmitHandler<CardFormProps> = async (data) => {
+    const result = await props.onSave(data);
+    if (result.status) {
+      toast.success(result.message);
+      props.type == `Add` && reset();
+    } else toast.error(result.message);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -60,31 +65,44 @@ const AddCustomerDialog: React.FC<CustomerDialogProps> = ({
     <Dialog>
       <DialogTrigger asChild>{props.children}</DialogTrigger>
       <DialogContent className="min-w-[30rem]">
-        <DialogHeader className="min-h-10 mb-2">
-          <DialogTitle className="text-[1.5rem]">
-            {props.type} Customer Profile
-          </DialogTitle>
+        <DialogHeader className="min-h-10">
+          <DialogTitle className="text-[1.5rem]">{props.type} Card</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleFormSubmission)}>
           <div className="flex flex-col gap-4">
             <div className="flex">
-              <Label htmlFor="name" className="text-lg my-auto w-[20rem]">
-                Customer name
+              <Label htmlFor="cardId" className="text-lg my-auto w-[18rem]">
+                Card Id
                 <span className="text-red-600 ">*</span>
               </Label>
               <Input
-                id="name"
-                {...register("username")}
+                id="cardId"
+                {...register("cardCode")}
                 type="text"
-                placeholder="eg: John Smith"
-                className="h-full text-lg placeholder_italic placeholder_text-base focus-visible_ring-0 border-2 border-gray-300"
+                className="h-full text-lg focus-visible_ring-0 border-2 border-gray-300"
+                onKeyDown={handleKeyDown}
+              />
+            </div>
+            <div className="flex">
+              <Label
+                htmlFor="custom-number"
+                className="text-lg my-auto w-[18rem]"
+              >
+                Custom Number
+                <span className="text-red-600 ">*</span>
+              </Label>
+              <Input
+                id="custom-number"
+                {...register("name")}
+                type="text"
+                className="h-full text-lg focus-visible_ring-0 border-2 border-gray-300"
                 onKeyDown={handleKeyDown}
               />
             </div>
             <div className="flex justify-end">
-              {(errors.root || errors.username) && (
+              {(errors.root || errors.cardCode || errors.name) && (
                 <div className="text-red-600 my-auto ml-auto mr-6 text-right">
-                  {(errors.root || errors.username)!.message}
+                  {(errors.root || errors.cardCode || errors.name)!.message}
                 </div>
               )}
               <Button
@@ -110,4 +128,4 @@ const AddCustomerDialog: React.FC<CustomerDialogProps> = ({
   );
 };
 
-export default AddCustomerDialog;
+export default CardActionDialog;
