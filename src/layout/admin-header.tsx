@@ -19,6 +19,11 @@ const StaffHeader: FC = () => {
       src: "/cards",
       visible: true,
     },
+    {
+      name: "Videos",
+      src: "/videos",
+      visible: true,
+    },
   ]);
   const selectedRoute = useMemo<string>(
     () => location.pathname,

@@ -11,7 +11,7 @@ import axios, { HttpStatusCode } from "axios";
 import { ActionResult } from "@/types/component";
 
 const CustomerManagement: FC = () => {
-  const initData = useRouteLoaderData("customer_management") as Customer[];
+  const initData = useRouteLoaderData("customer-management") as Customer[];
   const [customers, setCustomers] = useState<Customer[]>(initData);
   const [selectedUser, setSelectedUser] = useState<Customer | undefined>();
 

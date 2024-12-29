@@ -8,7 +8,7 @@ import { cardService } from "@/services";
 import { ActionResult } from "@/types/component";
 
 const CardManagement: FC = () => {
-  const initData = useRouteLoaderData("card_management") as Card[];
+  const initData = useRouteLoaderData("card-management") as Card[];
   const [cards, setCards] = useState<Card[]>(initData);
   const [selectedCard, setSelectedCard] = useState<Card | undefined>();
 

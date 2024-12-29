@@ -8,12 +8,14 @@ import {
   ParkingStates,
   Unauthorized,
 } from "@/pages";
-import { cardService, userService } from "@/services";
+import { cardService, userService, videoService } from "@/services";
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./protected-route";
 import { Role } from "@/types/enum";
 import { AuthProvider } from "@/context";
 import PreventUserLoginRoute from "./prevent-user-login-route";
+import VideoManagement from "@/pages/video-management-page";
+import ViewVideo from "@/pages/video-streaming-page";
 
 const routes = createBrowserRouter([
   {
@@ -30,7 +32,7 @@ const routes = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        id: "parking_status",
+        id: "parking-status",
         path: "parkingStatus",
         element: <ParkingStates />,
       },
@@ -60,15 +62,32 @@ const routes = createBrowserRouter([
     children: [
       {
         path: "customers",
-        id: "customer_management",
+        id: "customer-management",
         loader: userService.apis.getCustomers,
         element: <CustomerManagement />,
       },
       {
         path: "cards",
-        id: "card_management",
+        id: "card-management",
         loader: () => cardService.apis.getCards(),
         element: <CardManagement />,
+      },
+      {
+        path: "videos",
+        children: [
+          {
+            index: true,
+            id: "video-management",
+            loader: () => videoService.apis.getVideos({}),
+            element: <VideoManagement />,
+          },
+          {
+            path: ":id",
+            id: "view-video-page",
+            loader: videoService.apis.getVideo,
+            element: <ViewVideo />,
+          },
+        ],
       },
     ],
   },

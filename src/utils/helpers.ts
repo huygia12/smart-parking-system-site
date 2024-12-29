@@ -20,11 +20,15 @@ const formatDateTime = (dateString: string): string => {
 };
 
 const getDateString = (date: Date): string => {
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
 
-  return `${day} - T${month}, ${year}`;
+  return `${day}/${month}/${year}`;
 };
 
-export { formatDateTime, getDateString };
+const getPages = (rows: number, limit?: number): number => {
+  return Math.ceil(rows / (limit || 10)); //default limit is 10
+};
+
+export { formatDateTime, getDateString, getPages };

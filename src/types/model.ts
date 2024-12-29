@@ -37,6 +37,6 @@ export type ParkingSlot = {
 
 export type Video = {
   videoId: string;
-  name: string;
   createdAt: string;
+  url: string;
 };
