@@ -1,7 +1,6 @@
 import { Card } from "@/types/model";
 import { FC, useState } from "react";
 import { useRouteLoaderData } from "react-router-dom";
-import { toast } from "sonner";
 import { CardTable, CardToolBar } from "@/components/card-management";
 import { CardFormProps } from "@/utils/schema";
 import axios, { HttpStatusCode } from "axios";
@@ -13,19 +12,19 @@ const CardManagement: FC = () => {
   const [cards, setCards] = useState<Card[]>(initData);
   const [selectedCard, setSelectedCard] = useState<Card | undefined>();
 
-  const handleDeleteCard = () => {
-    const deleteUser = cardService.apis.deleteCard(selectedCard!.cardId);
-    toast.promise(deleteUser, {
-      loading: "Processing...",
-      success: () => {
-        setCards(cardService.deleteCard(selectedCard!, cards));
-        setSelectedCard(undefined);
-        return "Delete card succeed";
-      },
-      error: () => {
-        return "Delete card failed";
-      },
-    });
+  const handleDeleteCard = async (): Promise<ActionResult> => {
+    try {
+      await cardService.apis.deleteCard(selectedCard!.cardId);
+
+      setCards(cardService.deleteCard(selectedCard!, cards));
+      setSelectedCard(undefined);
+      return { status: true, message: "Delete card succeed" };
+    } catch (error) {
+      return {
+        status: false,
+        message: "Delete card failed",
+      };
+    }
   };
 
   const handleUpdateCard = async (
@@ -83,7 +82,7 @@ const CardManagement: FC = () => {
         <CardTable
           cards={cards}
           onSelectCard={setSelectedCard}
-          className="flex-1 w-1" // set width to make flex work ????
+          className="flex-1"
         />
 
         <CardToolBar

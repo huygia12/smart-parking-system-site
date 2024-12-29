@@ -27,6 +27,7 @@ export type Vehicle = {
   userId: string;
   createdAt: Date;
   licensePlate: string;
+  card?: Card;
 };
 
 export type ParkingSlot = {

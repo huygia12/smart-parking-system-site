@@ -1,4 +1,4 @@
-import { HTMLAttributes, useEffect } from "react";
+import { HTMLAttributes, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -38,6 +38,7 @@ const CardActionDialog: React.FC<CardActionDialogProps> = ({
   } = useForm<CardFormProps>({
     resolver: zodResolver(cardSchema),
   });
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (props.card) {
@@ -51,6 +52,7 @@ const CardActionDialog: React.FC<CardActionDialogProps> = ({
     if (result.status) {
       toast.success(result.message);
       props.type == `Add` && reset();
+      setIsOpen(false);
     } else toast.error(result.message);
   };
 
@@ -62,7 +64,7 @@ const CardActionDialog: React.FC<CardActionDialogProps> = ({
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{props.children}</DialogTrigger>
       <DialogContent className="min-w-[30rem]">
         <DialogHeader className="min-h-10">

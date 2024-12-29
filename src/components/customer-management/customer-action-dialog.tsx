@@ -1,4 +1,4 @@
-import { HTMLAttributes, useEffect } from "react";
+import { HTMLAttributes, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -41,6 +41,7 @@ const CustomerActionDialog: React.FC<CustomerActionDialogProps> = ({
       username: props.customer.username,
     },
   });
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (props.customer) {
@@ -56,6 +57,7 @@ const CustomerActionDialog: React.FC<CustomerActionDialogProps> = ({
     if (result.status) {
       toast.success(result.message);
       props.type == `Add` && reset();
+      setIsOpen(false);
     } else toast.error(result.message);
   };
 
@@ -67,7 +69,7 @@ const CustomerActionDialog: React.FC<CustomerActionDialogProps> = ({
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{props.children}</DialogTrigger>
       <DialogContent className="min-w-[30rem]">
         <DialogHeader className="min-h-10 mb-2">

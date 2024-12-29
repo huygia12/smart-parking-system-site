@@ -11,10 +11,6 @@ const customerSchema = z.object({
   email: notBlankString(),
 });
 
-const vehicleSchema = z.object({
-  licensePlate: notBlankString(),
-});
-
 const cardSchema = z.object({
   cardCode: notBlankString(),
   name: notBlankString(),
@@ -31,6 +27,4 @@ export type CustomerFormProps = z.infer<typeof customerSchema>;
 
 export type CardFormProps = z.infer<typeof cardSchema>;
 
-export type VehicleFormProps = z.infer<typeof vehicleSchema>;
-
-export { customerSchema, loginSchema, cardSchema, vehicleSchema };
+export { customerSchema, loginSchema, cardSchema };

@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { Car, Plus, SquarePen, Trash2 } from "lucide-react";
 import { FC, HTMLAttributes, useEffect } from "react";
 import { Card as CardContainer, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -9,12 +7,15 @@ import { CustomerFormProps } from "@/utils/schema";
 import DeleteCustomerAlertDialog from "./delete-customer-alert-dialog";
 import { ActionResult } from "@/types/component";
 import ViewVehiclesDialog from "./view-vehicles-dialog";
+import { Car, Plus, SquarePen, Trash2 } from "lucide-react";
+import { Button } from "../ui/button";
 
 interface UserToolsProps extends HTMLAttributes<HTMLDivElement> {
   selectedCustomer: Customer | undefined;
-  handleDeleteCustomer: () => void;
+  handleDeleteCustomer: () => Promise<ActionResult>;
   handleUpdateCustomer: (data: CustomerFormProps) => Promise<ActionResult>;
   handleAddCustomer: (data: CustomerFormProps) => Promise<ActionResult>;
+  onUpdateCustomerAttribute: (customer: Customer) => void;
 }
 
 const CustomerToolBar: FC<UserToolsProps> = ({ ...props }) => {
@@ -57,7 +58,10 @@ const CustomerToolBar: FC<UserToolsProps> = ({ ...props }) => {
               </Button>
             </DeleteCustomerAlertDialog>
 
-            <ViewVehiclesDialog customer={props.selectedCustomer}>
+            <ViewVehiclesDialog
+              onUpdate={props.onUpdateCustomerAttribute}
+              customer={props.selectedCustomer}
+            >
               <Button variant="destructive">
                 <Car />
               </Button>

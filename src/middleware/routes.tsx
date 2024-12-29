@@ -67,7 +67,7 @@ const routes = createBrowserRouter([
       {
         path: "cards",
         id: "card_management",
-        loader: () => cardService.apis.getCards(false),
+        loader: () => cardService.apis.getCards(),
         element: <CardManagement />,
       },
     ],

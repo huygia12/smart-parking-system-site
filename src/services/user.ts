@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { axiosInstance } from "@/config/axios-config";
-import { Customer } from "@/types/model";
+import { Card, Customer, Vehicle } from "@/types/model";
 import { CustomerFormProps } from "@/utils/schema";
 import { Args } from "@/utils/helpers";
 
@@ -70,11 +70,21 @@ const userService = {
   addCustomer: (newCustomer: Customer, prevCustomers: Customer[]) => {
     return [newCustomer, ...prevCustomers];
   },
-  updateCustomer: (selectedCustomer: Customer, prevCustomers: Customer[]) => {
+  updateCustomers: (selectedCustomer: Customer, prevCustomers: Customer[]) => {
     return [
       selectedCustomer,
       ...prevCustomers.filter((e) => e.userId !== selectedCustomer.userId),
     ];
+  },
+  updateCustomer: (
+    customerToUpdate: Customer,
+    params: { vehicles?: Vehicle[]; cards?: Card[] }
+  ): Customer => {
+    return {
+      ...customerToUpdate,
+      cards: params.cards || customerToUpdate.cards,
+      vehicles: params.vehicles || customerToUpdate.vehicles,
+    };
   },
   deleteCustomer: (selectedCustomer: Customer, prevCustomers: Customer[]) => {
     return [
@@ -82,7 +92,7 @@ const userService = {
     ];
   },
   isActive: (customer: Customer) => {
-    return customer.cards && customer.cards.length > 0;
+    return customer.vehicles && customer.vehicles.length > 0;
   },
 };
 

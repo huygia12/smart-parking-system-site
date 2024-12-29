@@ -11,7 +11,7 @@ import { ActionResult } from "@/types/component";
 
 interface UserToolsProps extends HTMLAttributes<HTMLDivElement> {
   selectedCard: Card | undefined;
-  handleDeleteCard: () => void;
+  handleDeleteCard: () => Promise<ActionResult>;
   handleUpdateCard: (data: CardFormProps) => Promise<ActionResult>;
   handleAddCard: (data: CardFormProps) => Promise<ActionResult>;
 }

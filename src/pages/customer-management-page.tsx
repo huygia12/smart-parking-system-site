@@ -1,7 +1,6 @@
 import { Customer } from "@/types/model";
 import { FC, useState } from "react";
 import { useRouteLoaderData } from "react-router-dom";
-import { toast } from "sonner";
 import { userService } from "@/services";
 import {
   CustomerTable,
@@ -13,22 +12,22 @@ import { ActionResult } from "@/types/component";
 
 const CustomerManagement: FC = () => {
   const initData = useRouteLoaderData("customer_management") as Customer[];
-  const [customers, setUsers] = useState<Customer[]>(initData);
+  const [customers, setCustomers] = useState<Customer[]>(initData);
   const [selectedUser, setSelectedUser] = useState<Customer | undefined>();
 
-  const handleDeleteCustomer = () => {
-    const deleteUser = userService.apis.deleteCustomer(selectedUser!.userId);
-    toast.promise(deleteUser, {
-      loading: "Processing...",
-      success: () => {
-        setUsers(userService.deleteCustomer(selectedUser!, customers));
-        setSelectedUser(undefined);
-        return "Delete customer succeed";
-      },
-      error: () => {
-        return "Delete customer failed";
-      },
-    });
+  const handleDeleteCustomer = async (): Promise<ActionResult> => {
+    try {
+      await userService.apis.deleteCustomer(selectedUser!.userId);
+
+      setCustomers(userService.deleteCustomer(selectedUser!, customers));
+      setSelectedUser(undefined);
+      return { status: true, message: "Delete customer succeed" };
+    } catch (error) {
+      return {
+        status: false,
+        message: "Delete customer failed",
+      };
+    }
   };
 
   const handleUpdateCustomer = async (
@@ -40,7 +39,7 @@ const CustomerManagement: FC = () => {
         data
       );
 
-      setUsers(userService.updateCustomer(updateCustomer, customers));
+      setCustomers(userService.updateCustomers(updateCustomer, customers));
       return { status: true, message: "Update customer succeed" };
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -64,7 +63,7 @@ const CustomerManagement: FC = () => {
     try {
       const createCustomer = await userService.apis.createCustomer(data);
 
-      setUsers(userService.addCustomer(createCustomer, customers));
+      setCustomers(userService.addCustomer(createCustomer, customers));
       return { status: true, message: "Create customer succeed" };
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -88,11 +87,14 @@ const CustomerManagement: FC = () => {
         <CustomerTable
           customers={customers}
           onSelectCustomer={setSelectedUser}
-          className="flex-1 w-1" // set width to make flex work ????
+          className="flex-1"
         />
 
         <CustomerToolBar
           selectedCustomer={selectedUser}
+          onUpdateCustomerAttribute={(customer) =>
+            setCustomers(userService.updateCustomers(customer, customers))
+          }
           handleAddCustomer={handleAddCustomer}
           handleUpdateCustomer={handleUpdateCustomer}
           handleDeleteCustomer={handleDeleteCustomer}

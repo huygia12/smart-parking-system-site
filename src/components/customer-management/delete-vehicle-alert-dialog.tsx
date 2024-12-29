@@ -15,11 +15,11 @@ import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { LoadingSpinner } from "../effect";
 
-interface DeleteCardAlertDialogProps extends HTMLAttributes<HTMLDivElement> {
-  onDeleteCard: () => Promise<ActionResult>;
+interface DeleteVehicleAlertDialogProps extends HTMLAttributes<HTMLDivElement> {
+  onDeleteVehicle: () => Promise<ActionResult>;
 }
 
-const DeleteCardAlertDialog: FC<DeleteCardAlertDialogProps> = ({
+const DeleteVehicleAlertDialog: FC<DeleteVehicleAlertDialogProps> = ({
   ...props
 }) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -27,7 +27,7 @@ const DeleteCardAlertDialog: FC<DeleteCardAlertDialogProps> = ({
 
   const handleDeleteAction = async () => {
     setIsSubmitting(true);
-    const result = await props.onDeleteCard();
+    const result = await props.onDeleteVehicle();
     setIsSubmitting(false);
     setIsOpen(false);
     if (result.status) {
@@ -42,7 +42,7 @@ const DeleteCardAlertDialog: FC<DeleteCardAlertDialogProps> = ({
         <AlertDialogHeader>
           <AlertDialogTitle>Wanna delete?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action will permanently remove card and cannot be undo.
+            This action will permanently remove the vehicle and cannot be undo.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -65,4 +65,4 @@ const DeleteCardAlertDialog: FC<DeleteCardAlertDialogProps> = ({
   );
 };
 
-export default DeleteCardAlertDialog;
+export default DeleteVehicleAlertDialog;

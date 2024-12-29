@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import TableContextMenu from "@/components/common/table-context-menu";
 
-const columnHeaders = ["", "CARD ID", "CUSTOM NUMBER", "CUSTOMER"];
+const columnHeaders = ["", "CARD ID", "CUSTOM NAME", "CUSTOMER"];
 
 interface CardTableProps extends HTMLAttributes<HTMLTableElement> {
   cards: Card[];
@@ -40,7 +40,7 @@ const CardTable: FC<CardTableProps> = ({ ...props }) => {
         <CardTitle className="text-8">CARD LIST</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col px-4">
-        <ScrollArea className="relavtive h-[58vh] pr-3 pb-3">
+        <ScrollArea className="relavtive h-[58vh]">
           <Table>
             <TableHeader className="z-10 border-b-secondary-foreground border-b-2 sticky top-0 bg-white shadow-lg">
               <tr>
@@ -70,7 +70,10 @@ const CardTable: FC<CardTableProps> = ({ ...props }) => {
                     {index + 1}
                   </TableCell>
                   <TableCell className="text-center text-base">
-                    <TableContextMenu textToCopy={card.cardId}>
+                    <TableContextMenu
+                      textToCopy={card.cardCode}
+                      className="h-full"
+                    >
                       {card.cardCode}
                     </TableContextMenu>
                   </TableCell>

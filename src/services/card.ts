@@ -7,7 +7,7 @@ const cardEndPoint = "/cards";
 
 const cardService = {
   apis: {
-    getCards: async (available: boolean): Promise<Card[]> => {
+    getCards: async (available: boolean = false): Promise<Card[]> => {
       let url = cardEndPoint;
       url = `${url}?available=${available ? 1 : 0}`;
 
@@ -31,7 +31,7 @@ const cardService = {
       const res = await axiosInstance.put<{ info: Card }>(
         `${cardEndPoint}/${cardId}`,
         {
-          cardCode: data.name.trim(),
+          cardCode: data.cardCode.trim(),
           name: data.name.trim(),
         }
       );

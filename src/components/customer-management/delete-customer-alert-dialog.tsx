@@ -1,7 +1,5 @@
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -10,18 +8,36 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { buttonVariants } from "@/utils/constants";
-import { FC, HTMLAttributes } from "react";
+import { FC, HTMLAttributes, useState } from "react";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
+import { ActionResult } from "@/types/component";
+import { toast } from "sonner";
+import { LoadingSpinner } from "../effect";
 
 interface DeleteCustomerAlertDialogProps
   extends HTMLAttributes<HTMLDivElement> {
-  onDeleteCustomer: () => void;
+  onDeleteCustomer: () => Promise<ActionResult>;
 }
 
 const DeleteCustomerAlertDialog: FC<DeleteCustomerAlertDialogProps> = ({
   ...props
 }) => {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleDeleteAction = async () => {
+    setIsSubmitting(true);
+    const result = await props.onDeleteCustomer();
+    setIsSubmitting(false);
+    setIsOpen(false);
+    if (result.status) {
+      toast.success(result.message);
+    } else toast.error(result.message);
+  };
+
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>{props.children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -31,15 +47,19 @@ const DeleteCustomerAlertDialog: FC<DeleteCustomerAlertDialogProps> = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogAction
-            onClick={props.onDeleteCustomer}
-            className={buttonVariants({
-              variant: "negative",
-            })}
+          <Button
+            disabled={isSubmitting}
+            onClick={handleDeleteAction}
+            className={cn("mt-auto", buttonVariants({ variant: "negative" }))}
           >
-            Delete
-          </AlertDialogAction>
-          <AlertDialogCancel className="mt-0">Cancel</AlertDialogCancel>
+            {!isSubmitting ? (
+              "Delete"
+            ) : (
+              <>
+                <LoadingSpinner size={26} className="text-white" />
+              </>
+            )}
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

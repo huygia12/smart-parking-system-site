@@ -68,6 +68,11 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      textShadow: {
+        normal: "2px 2px 0px #c9c9c9, -2px -2px 0px #c9c9c9",
+        red: "2px 2px 0px #ff0000, -2px -2px 0px #ff0000, 0px 0px 8px #cc0000",
+        blue: "2px 2px 0px #0957ff, -2px -2px 0px #0957ff, 0px 0px 8px #1150d6",
+      },
       keyframes: {
         fadeInScale: {
           "0%": { opacity: 0, transform: "scale(0.2)" },
@@ -78,8 +83,13 @@ module.exports = {
           "0%": { opacity: 0, transform: "scale(0.8)" },
           "100%": { opacity: 1, transform: "scale(1)" },
         },
+        "caret-blink": {
+          "0%,70%,100%": { opacity: "1" },
+          "20%,50%": { opacity: "0" },
+        },
       },
       animation: {
+        "caret-blink": "caret-blink 1.25s ease-out infinite",
         fadeInScale: "fadeInScale 4s ease-out forwards",
         fadeInSlide: "fadeInSlide 2s ease-out forwards",
       },

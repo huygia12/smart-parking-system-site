@@ -1,40 +1,36 @@
 import { axiosInstance } from "@/config";
 import { Card, Customer, Vehicle } from "@/types/model";
-import { VehicleFormProps } from "@/utils/schema";
 import { AxiosResponse } from "axios";
 
 const vehicleEndPoint = "/vehicles";
 
 const vehicleService = {
   apis: {
-    addVehicle: async (data: VehicleFormProps, userId: string) => {
+    addVehicle: async (data: string, userId: string) => {
       const res = await axiosInstance.post<{ info: Vehicle }>(
         `${vehicleEndPoint}`,
         {
           userId: userId,
-          licensePlate: data.licensePlate.trim(),
+          licensePlate: data.trim(),
         }
       );
 
       return res.data.info;
     },
-    updateVehicle: async (data: VehicleFormProps, vehicleId: string) => {
+    updateVehicle: async (newLicensePlate: string, vehicleId: string) => {
       const res = await axiosInstance.put<{ info: Vehicle }>(
         `${vehicleEndPoint}/${vehicleId}`,
         {
-          licensePlate: data.licensePlate.trim(),
+          licensePlate: newLicensePlate.trim(),
         }
       );
 
       return res.data.info;
     },
     changeCardLinkToVehicle: async (cardId: string, vehicleId: string) => {
-      const res = await axiosInstance.put<{ info: Vehicle }>(
-        `${vehicleEndPoint}/${vehicleId}`,
-        {
-          cardId: cardId.trim(),
-        }
-      );
+      const res = await axiosInstance.put(`${vehicleEndPoint}/${vehicleId}`, {
+        cardId: cardId.trim(),
+      });
 
       return res.data.info;
     },
@@ -46,16 +42,26 @@ const vehicleService = {
   addVehicle: (newVehicle: Vehicle, prevVehicles: Vehicle[]) => {
     return [newVehicle, ...prevVehicles];
   },
-  updateVehicle: (selectedVehicle: Vehicle, prevCustomers: Vehicle[]) => {
+  updateVehicle: (
+    newLicensePlate: string,
+    vehicleId: string,
+    prevVehicles: Vehicle[]
+  ): Vehicle[] => {
+    const selectedVehicle = prevVehicles.find((c) => c.vehicleId === vehicleId);
     return [
-      selectedVehicle,
-      ...prevCustomers.filter((e) => e.vehicleId !== selectedVehicle.vehicleId),
+      {
+        ...selectedVehicle!,
+        vehicleId: vehicleId,
+        licensePlate: newLicensePlate,
+      },
+      ...prevVehicles.filter((e) => e.vehicleId !== vehicleId),
     ];
   },
-  deleteCustomer: (selectedVehicle: Vehicle, prevVehicles: Vehicle[]) => {
-    return [
-      ...prevVehicles.filter((e) => e.vehicleId !== selectedVehicle.vehicleId),
-    ];
+  deleteVehicle: (vehicleId: string, prevVehicles: Vehicle[]) => {
+    return [...prevVehicles.filter((e) => e.vehicleId !== vehicleId)];
+  },
+  formatLicensePlate: (licensePlate: string) => {
+    return licensePlate.replace(/^(\d{2})([A-Z])(\d{3})(\d{2})$/, "$1$2-$3.$4");
   },
   getVehiclesFromCustomer: (
     //TODO: make cards not undefined
